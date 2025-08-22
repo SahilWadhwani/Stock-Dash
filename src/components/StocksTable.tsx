@@ -1,4 +1,3 @@
-import React from "react";
 import type { Quote } from "../lib/types";
 import { cn } from "../lib/cn";
 import Sparkline from "./Sparkline";
