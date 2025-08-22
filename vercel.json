@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/yf-api/(.*)", "destination": "/api/yf-proxy/$1" }
+  ]
+}
