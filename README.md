@@ -1,69 +1,92 @@
-# React + TypeScript + Vite
+#  Stock Dash
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, responsive stock price dashboard built with **React**, **TypeScript**, **Vite**, and **Tailwind CSS**. It fetches **live stock quotes from Finnhub** and shows **7-day sparkline charts** using Yahoo Finance (via a serverless proxy).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##  Demo
 
-## Expanding the ESLint configuration
+- [Live App on Vercel](https://stock-dash-762p-74ak2h38j-sahilwadhwanis-projects.vercel.app)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+##  Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **Core functionality**
+  - Fetches and displays stock data in a table (symbol, price, change, % change, prev close, range).
+  - Responsive layout styled with Tailwind CSS.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Additional features**
+  - **Loading state** with spinner.
+  - **Sorting** by clicking table headers (ascending/descending).
+  - **Search and add** new stock symbols dynamically.
+  - **Robust error handling** for both global and per-symbol errors.
+  - **7-day sparkline chart** for each stock using Chart.js.
+  - **Serverless proxy** for Yahoo Finance history to resolve CORS issues.
+
+---
+
+## Tech Stack
+
+- [React + TypeScript + Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Chart.js + react-chartjs-2](https://react-chartjs-2.js.org/)
+- [Finnhub API](https://finnhub.io/) (for live quotes)
+- [Yahoo Finance Chart API](https://query1.finance.yahoo.com/) (for sparklines, accessed via proxy)
+- [Vercel](https://vercel.com/) (for deployment and serverless functions)
+
+---
+
+##  Setup (Local Development)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SahilWadhwani/Stock-Dash.git
+cd Stock-Dash
+
+# 2. Install dependencies
+npm install
+
+# 3. Add your Finnhub API key
+echo "VITE_FINNHUB_KEY=your_api_key_here" > .env.local
+
+# 4. Run the development server
+npm run dev
+# Visit http://localhost:5173 in your browser
+````
+
+-----
+
+##  Deployment (Vercel)
+
+  - Add your `VITE_FINNHUB_KEY` to **Project Settings → Environment Variables**.
+  - The Yahoo proxy is handled by `api/yf-proxy.js` with a rewrite rule in `vercel.json` to route requests:
+
+<!-- end list -->
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/yf-api/(.*)",
+      "destination": "/api/yf-proxy/$1"
+    }
+  ]
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+> **Note:** The Yahoo Finance endpoint does not require an API key.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+-----
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+##  Important Notes
+
+  - The Finnhub free plan has a rate limit of 60 API calls per minute. The app handles rate limit errors gracefully.
+  - The Yahoo Finance endpoint is undocumented, so it is accessed via a serverless proxy to bypass Cross-Origin Resource Sharing (CORS) restrictions.
+  - A synthetic fallback is implemented to ensure sparkline charts never appear as empty gaps.
+
+-----
+
+##  Author
+
+Sahil Wadhwani
